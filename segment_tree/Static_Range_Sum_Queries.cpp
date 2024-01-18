@@ -23,11 +23,6 @@ long long query(int node, int node_left, int node_right, int query_left, int que
 void build(vector<int>& nums) {
     int n = nums.size();
     
-    while(__builtin_popcount(n) != 1) {
-        n++;
-        nums.push_back(0);
-    }
-    
     tree.resize(2*n);
     
     for(int i=0; i<n; i++) {
@@ -46,6 +41,10 @@ int main() {
     
     vector<int> nums(n);
     for(int i=0;i<n;i++)  cin>>nums[i];
+    while(__builtin_popcount(n) != 1) {
+        n++;
+        nums.push_back(0);
+    }
     build(nums);
     
     while(q--) {
