@@ -1,0 +1,16 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+
+# Keep all directories so negations work inside them
+!*/
+# I don't want to keep this repository
+.vscode 
+
+# Keep .cpp files in root and subfolders
+!*.cpp
+!*/*.cpp
+!*/*.md
+!*.md
