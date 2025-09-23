@@ -1,0 +1,91 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+using ll = long long;
+
+ll NEUTRAL = INT_MAX;
+
+ll operation(ll a, ll b) {
+    return min(a, b); 
+}
+
+vector<ll> tree;
+
+void build(vector<ll>& arr, ll lo, ll hi, ll node) {
+    if (lo == hi) {
+        tree[node] = arr[lo];
+        return;
+    }
+    ll mid = lo + (hi - lo) / 2;
+    build(arr, lo, mid, 2 * node + 1);
+    build(arr, mid + 1, hi, 2 * node + 2);
+    tree[node] = operation(tree[2 * node + 1], tree[2 * node + 2]);
+}
+
+ll query(ll start, ll end, ll lo, ll hi, ll node) {
+    if (hi < start || lo > end) return NEUTRAL;
+    if (lo >= start && hi <= end) return tree[node];
+    ll mid = lo + (hi - lo) / 2;
+    return operation(
+        query(start, end, lo, mid, 2 * node + 1),
+        query(start, end, mid + 1, hi, 2 * node + 2)
+    );
+}
+
+void update(ll lo, ll hi, ll index, ll val, ll node) {
+    if(lo == hi) {
+        tree[node] = val;
+        return;
+    }
+
+    ll mid = lo + (hi - lo)/2;
+    if(index <= mid) {
+        update(lo, mid, index, val, 2*node+1);
+    }else {
+        update(mid+1, hi, index, val, 2*node+2);
+    }
+
+    tree[node] = operation(tree[2*node+1], tree[2*node+2]);
+}
+
+void solve() {
+    ll n, q;
+    cin >> n >> q;
+    vector<ll> arr(n);
+    for (ll i = 0; i < n; i++) cin >> arr[i];
+
+    tree.resize(4 * n);
+    build(arr, 0, n - 1, 0);
+
+    while (q--) {
+        ll type;
+        cin>>type;
+
+        if(type == 2) {
+            // query
+            ll l, r;
+            cin >> l >> r;
+            l--, r--;
+            cout << query(l, r, 0, n - 1, 0) << '\n';
+        }else {
+            // update
+            ll pos, val;
+            cin>>pos>>val;
+            update(0, n-1, pos-1, val, 0);
+        }
+    }
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int t = 1;
+    // cin >> t; // Uncomment for multiple test cases
+    while (t--) solve();
+
+    return 0;
+}
